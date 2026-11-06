@@ -4,9 +4,7 @@ Example:
     python scripts/evaluate.py --checkpoint checkpoints/rlformer.pt --data-root data \
         --test picmus:in-vivo:carotid_cross picmus:in-vivo:carotid_long cubdl:OSL:10 --out-dir results
 
-Methods compared (all cropped to the policy's grid): DAS (0 deg), CC (every third plane wave),
-RLFormer (0 deg) and the reference CC (all plane waves). Similarity metrics (MSE, PSNR, SSIM) are
-computed on B-mode images mapped to [0, 1]; contrast metrics (CNR, gCNR) on the envelope and only
+Similarity metrics (MSE, PSNR, SSIM) are computed on B-mode images mapped to [0, 1]; contrast metrics (CNR, gCNR) on the envelope and only
 if regions of interest are given with --rois (JSON, millimetres):
     {"picmus:in-vivo:carotid_long": {"fg": {"x": [-3, 3], "z": [15, 22]}, "bg": {"x": [5, 12], "z": [25, 32]}}}
 """
