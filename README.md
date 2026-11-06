@@ -1,6 +1,6 @@
 # RLFormer
 
-Code for **"Reinforcement Learning of Adaptive Speed-of-Sound Fields for Self-Supervised Single
+Illustrative code for **"Reinforcement Learning of Adaptive Speed-of-Sound Fields for Self-Supervised Single
 Plane-Wave Ultrasound Beamforming"** (M. Wasih and M. K. Almekkawy, *IEEE Transactions on
 Computational Imaging*, vol. 12, pp. 1454-1467, 2026).
 
