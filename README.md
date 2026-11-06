@@ -11,8 +11,6 @@ the per-pixel delay curves, and learns per-pixel channel weights for the summati
 without reference images, SoS labels or multi-angle data, using label-free rewards computed from the
 reconstruction itself.
 
-<p align="center"><i>RF data of one plane wave &rarr; policy (D2DNN + adaptive DAS) &times; 5 steps &rarr; image</i></p>
-
 ## How it works
 
 * **State** `s_t = (1/c_t, image_t)`: the slowness at every pixel and the current beamformed image.
