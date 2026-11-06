@@ -1,4 +1,4 @@
-"""Evaluate a trained policy against single plane-wave DAS and coherent compounding.
+"""Evaluate a trained policy model.
 
 Example:
     python scripts/evaluate.py --checkpoint checkpoints/rlformer.pt --data-root data \
