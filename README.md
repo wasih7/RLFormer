@@ -16,19 +16,19 @@ reconstruction itself.
 * **State** `s_t = (1/c_t, image_t)`: the slowness at every pixel and the current beamformed image.
   The initial state is the homogeneous nominal speed of sound and an empty image.
 * **Policy** (`rlformer/model.py`)
-  * `D2DNN` - an MLP-mixer layer applied patch-wise (default 50x50 pixels) to the pixel features
-    `(x, z, 1/c_t, d_TX/c_t)`. It outputs a bounded residual (`10 tanh(.)` m/s) added to the local
+  * `D2DNN` - an MLP-mixer layer applied patch-wise to the pixel features
+    `(x, z, 1/c_t, d_TX/c_t)`. It outputs a bounded residual added to the local
     sound speed.
   * *Adaptive DAS* - the delay curve of every pixel is the hyperbola `t(x_i) = k + b sqrt(1 + (x_i - h)^2 / a^2)`
     with `h = x`, `a = z`, `b = z / c(x, z)`, `k = d_TX / c(x, z)`; the RF channels are interpolated on it
-    and summed with learnable per-pixel weights `beta`. The new image is `0.8 * DAS + 0.2 * previous image`.
-* **Reward** (`rlformer/rewards.py`), received only after the last of `T = 5` steps and computed from the
-  reconstruction alone: `0.2 * FSR + 0.4 * LTE + 0.4 * CF`
+    and summed with learnable per-pixel weights `beta`. The new image is `w_1 * DAS + (1-w_1) * previous image`.
+* **Reward** (`rlformer/rewards.py`), received only after the last of `T` steps and computed from the
+  reconstruction alone: `w_2 * FSR + w_3 * LTE + (1-w_2-w_3) * CF`
   (feature sharpness = normalized variance of the Laplacian, local texture entropy, coherence factor of the
   delayed channel data).
 * **Optimisation** (`rlformer/train.py`) - deterministic policy gradient. The reward is differentiable with
   respect to the actions, so the gradient is obtained by back-propagating through the unrolled episode
-  with autograd; Adam, learning rate 0.01.
+  with autograd; Adam.
 
 The learned SoS field is an *effective* delay field under straight-ray, plane-wave DAS assumptions, not
 a measurement of tissue sound speed.
@@ -89,9 +89,7 @@ python scripts/evaluate.py --checkpoint checkpoints/rlformer.pt --data-root data
     --test picmus:in-vivo:carotid_cross picmus:in-vivo:carotid_long cubdl:OSL:10 --out-dir results
 ```
 
-For every test acquisition this reconstructs the 0 degree plane wave with the policy and compares it
-with DAS (0 degree), CC of every third plane wave and the CC reference of all plane waves. It writes
-images, the learned SoS field, a figure and `metrics.json`. MSE, PSNR and SSIM are computed on B-mode
+For every test acquisition this reconstructs the 0 degree plane wave with the policy. MSE, PSNR and SSIM are computed on B-mode
 images mapped to [0, 1]; CNR and gCNR are computed on the envelope if regions of interest are supplied
 with `--rois` (see `python scripts/evaluate.py --help`).
 
@@ -121,9 +119,7 @@ tests/             unit tests
 * Rewards are computed on the beamformed RF-domain image scaled to a maximum absolute value of 1; the
   coherence factor uses the delayed channel data of the last step. The envelope used for B-mode images and
   contrast metrics is the analytic signal of the RF image along depth.
-* DAS and CC baselines in `beamforming.py` use the nominal speed of sound and no apodization. The
-  comparison in the paper additionally used the `ultraspy` library and a minimum-variance beamformer,
-  which are not part of this repository.
+* DAS and CC baselines in `beamforming.py` use the nominal speed of sound and no apodization.
 * PSNR is computed as `10 log10(1 / (MSE + 1e-6))`, so identical images give 60 dB.
 * CNR is `|mu_fg - mu_bg| / sqrt((var_fg + var_bg) / 2)`.
 
