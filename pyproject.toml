@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rlformer"
+version = "0.1.0"
+description = "Reinforcement learning of adaptive speed-of-sound fields for self-supervised single plane-wave ultrasound beamforming"
+requires-python = ">=3.9"
+dependencies = ["torch>=2.0", "numpy", "scipy", "h5py", "matplotlib", "tqdm"]
+
+[tool.setuptools]
+packages = ["rlformer"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
